@@ -1,0 +1,28 @@
+# Maven
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+out/
+
+# Environment
+.env
+
+# Maven Wrapper (opcional)
+!.mvn/wrapper/maven-wrapper.jar
+
+# Java
+*.class
+
+# Generated
+dependency-reduced-pom.xml
