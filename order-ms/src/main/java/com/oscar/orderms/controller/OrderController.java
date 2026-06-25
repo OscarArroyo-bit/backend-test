@@ -23,4 +23,9 @@ public class OrderController {
     public OrderResponse createOrder(@Valid @RequestBody CreateOrderRequest request){
         return orderService.createOrder(request);
     }
+
+    @GetMapping("/{id}")
+    public OrderResponse getOrder(@PathVariable Long id){
+        return orderService.getOrder(id);
+    }
 }

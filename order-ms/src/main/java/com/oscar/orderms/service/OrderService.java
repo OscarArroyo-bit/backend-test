@@ -4,6 +4,7 @@ import com.oscar.orderms.dto.CreateOrderRequest;
 import com.oscar.orderms.dto.OrderResponse;
 import com.oscar.orderms.entity.Order;
 import com.oscar.orderms.enums.OrderStatus;
+import com.oscar.orderms.exception.ResourceNotFoundException;
 import com.oscar.orderms.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,12 +29,26 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
+        return mapToResponse(savedOrder);
+    }
+
+    public OrderResponse getOrder(Long id) {
+
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Order with id " + id + " not found"));
+
+        return mapToResponse(order);
+    }
+
+    private OrderResponse mapToResponse(Order order) {
+
         return OrderResponse.builder()
-                .id(savedOrder.getId())
-                .productName(savedOrder.getProductName())
-                .quantity(savedOrder.getQuantity())
-                .price(savedOrder.getPrice())
-                .status(String.valueOf(savedOrder.getStatus()))
+                .id(order.getId())
+                .productName(order.getProductName())
+                .quantity(order.getQuantity())
+                .price(order.getPrice())
+                .status(String.valueOf(order.getStatus()))
                 .build();
     }
 }
