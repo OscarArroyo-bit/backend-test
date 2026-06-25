@@ -5,6 +5,8 @@ import com.oscar.orderms.dto.OrderResponse;
 import com.oscar.orderms.entity.Order;
 import com.oscar.orderms.enums.OrderStatus;
 import com.oscar.orderms.exception.ResourceNotFoundException;
+import com.oscar.orderms.kafka.OrderProducer;
+import com.oscar.orderms.kafka.dto.OrderPlacedEvent;
 import com.oscar.orderms.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,11 @@ import org.springframework.stereotype.Service;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderProducer orderProducer;
 
-    public OrderService(OrderRepository orderRepository){
+    public OrderService(OrderRepository orderRepository, OrderProducer orderProducer){
         this.orderRepository = orderRepository;
+        this.orderProducer = orderProducer;
     }
 
     public OrderResponse createOrder(CreateOrderRequest request) {
@@ -28,6 +32,16 @@ public class OrderService {
                 .build();
 
         Order savedOrder = orderRepository.save(order);
+
+        OrderPlacedEvent event = OrderPlacedEvent.builder()
+                .orderId(savedOrder.getId())
+                .productName(savedOrder.getProductName())
+                .quantity(savedOrder.getQuantity())
+                .price(savedOrder.getPrice())
+                .cardNumber(savedOrder.getCardNumber())
+                .build();
+
+        orderProducer.send(event);
 
         return mapToResponse(savedOrder);
     }
