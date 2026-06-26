@@ -27,7 +27,11 @@ public class PaymentProcessedConsumer {
         logger.info("==================================");
         logger.info("PAYMENT RESULT RECEIVED");
         logger.info("Order Id: {}", event.getOrderId());
-        logger.info("Success: {}", event.isSuccess());
+        if (event.isSuccess()) {
+            logger.info("Payment approved for order {}", event.getOrderId());
+        } else {
+            logger.info("Payment rejected for order {}", event.getOrderId());
+        }
         logger.info("==================================");
 
         orderService.updateOrderStatus(event);

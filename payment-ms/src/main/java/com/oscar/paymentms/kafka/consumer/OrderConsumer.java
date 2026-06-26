@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import java.util.Random;
 
 @Service
 public class OrderConsumer {
@@ -35,7 +36,8 @@ public class OrderConsumer {
         logger.info("Price: {}", orderPlacedEvent.getPrice());
         logger.info("==================================");
 
-        boolean success = true;
+        Random random = new Random();
+        boolean success = random.nextBoolean();
 
         PaymentProcessedEvent event = PaymentProcessedEvent.builder()
                 .orderId(orderPlacedEvent.getOrderId())
