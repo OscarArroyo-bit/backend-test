@@ -4,6 +4,7 @@ import com.oscar.paymentms.config.KafkaTopics;
 import com.oscar.paymentms.kafka.dto.OrderPlacedEvent;
 import com.oscar.paymentms.kafka.dto.PaymentProcessedEvent;
 import com.oscar.paymentms.kafka.producer.PaymentProducer;
+import com.oscar.paymentms.security.RSAService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -17,9 +18,13 @@ public class OrderConsumer {
             LoggerFactory.getLogger(OrderConsumer.class);
 
     private final PaymentProducer paymentProducer;
+    private final RSAService rsaService;
 
-    public OrderConsumer(PaymentProducer paymentProducer) {
+    public OrderConsumer(PaymentProducer paymentProducer,
+                         RSAService rsaService) {
+
         this.paymentProducer = paymentProducer;
+        this.rsaService = rsaService;
     }
 
     @KafkaListener(
@@ -28,13 +33,17 @@ public class OrderConsumer {
     )
     public void consume(OrderPlacedEvent orderPlacedEvent) {
 
+        String cardNumber = rsaService.decrypt(orderPlacedEvent.getCardNumber());
         logger.info("==================================");
         logger.info("ORDER RECEIVED");
         logger.info("Order Id: {}", orderPlacedEvent.getOrderId());
         logger.info("Product: {}", orderPlacedEvent.getProductName());
         logger.info("Quantity: {}", orderPlacedEvent.getQuantity());
         logger.info("Price: {}", orderPlacedEvent.getPrice());
+        logger.info("RSA Card Number: {}", orderPlacedEvent.getCardNumber());
+        logger.info("Card Number: {}", cardNumber);
         logger.info("==================================");
+
 
         Random random = new Random();
         boolean success = random.nextBoolean();

@@ -9,6 +9,7 @@ import com.oscar.orderms.kafka.dto.PaymentProcessedEvent;
 import com.oscar.orderms.kafka.producer.OrderProducer;
 import com.oscar.orderms.kafka.dto.OrderPlacedEvent;
 import com.oscar.orderms.repository.OrderRepository;
+import com.oscar.orderms.security.RSAService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,15 @@ public class OrderService {
     private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
     private final OrderProducer orderProducer;
+    private final RSAService rsaService;
 
-    public OrderService(OrderRepository orderRepository, OrderProducer orderProducer){
+    public OrderService(OrderRepository orderRepository,
+                        OrderProducer orderProducer,
+                        RSAService rsaService) {
+
         this.orderRepository = orderRepository;
         this.orderProducer = orderProducer;
+        this.rsaService = rsaService;
     }
 
     public OrderResponse createOrder(CreateOrderRequest request) {
@@ -38,13 +44,14 @@ public class OrderService {
                 .build();
 
         Order savedOrder = orderRepository.save(order);
+        String encryptedCard = rsaService.encrypt(savedOrder.getCardNumber());
 
         OrderPlacedEvent event = OrderPlacedEvent.builder()
                 .orderId(savedOrder.getId())
                 .productName(savedOrder.getProductName())
                 .quantity(savedOrder.getQuantity())
                 .price(savedOrder.getPrice())
-                .cardNumber(savedOrder.getCardNumber())
+                .cardNumber(encryptedCard)
                 .build();
 
         orderProducer.send(event);
