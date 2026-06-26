@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -66,6 +66,14 @@ public class OrderService {
                         new ResourceNotFoundException("Order with id " + id + " not found"));
 
         return mapToResponse(order);
+    }
+
+    public List<OrderResponse> getAllOrders() {
+
+        return orderRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     private OrderResponse mapToResponse(Order order) {
