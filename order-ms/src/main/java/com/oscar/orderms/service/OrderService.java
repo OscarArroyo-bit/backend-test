@@ -5,14 +5,20 @@ import com.oscar.orderms.dto.OrderResponse;
 import com.oscar.orderms.entity.Order;
 import com.oscar.orderms.enums.OrderStatus;
 import com.oscar.orderms.exception.ResourceNotFoundException;
-import com.oscar.orderms.kafka.OrderProducer;
+import com.oscar.orderms.kafka.dto.PaymentProcessedEvent;
+import com.oscar.orderms.kafka.producer.OrderProducer;
 import com.oscar.orderms.kafka.dto.OrderPlacedEvent;
 import com.oscar.orderms.repository.OrderRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class OrderService {
 
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
     private final OrderProducer orderProducer;
 
@@ -64,5 +70,25 @@ public class OrderService {
                 .price(order.getPrice())
                 .status(String.valueOf(order.getStatus()))
                 .build();
+    }
+
+    public void updateOrderStatus(PaymentProcessedEvent event) {
+
+        Order order = orderRepository.findById(event.getOrderId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Order with id " + event.getOrderId() + " not found"));
+
+        if (event.isSuccess()) {
+            order.setStatus(OrderStatus.PAGADO);
+        } else {
+            order.setStatus(OrderStatus.FALLO_PAGO);
+        }
+
+        orderRepository.save(order);
+
+        logger.info("Order {} updated to status {}",
+                order.getId(),
+                order.getStatus());
     }
 }
