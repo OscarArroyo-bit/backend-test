@@ -3,9 +3,11 @@ package com.oscar.orderms.entity;
 import com.oscar.orderms.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
 
+/**
+ * Represents an order stored in the database.
+ */
 @Entity
 @Table(name = "orders")
 @Getter

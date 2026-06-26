@@ -1,7 +1,6 @@
 package com.oscar.orderms.kafka.dto;
 
 import lombok.*;
-
 import java.math.BigDecimal;
 
 @Getter

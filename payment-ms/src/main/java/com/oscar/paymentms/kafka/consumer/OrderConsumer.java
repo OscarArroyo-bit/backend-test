@@ -11,6 +11,13 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import java.util.Random;
 
+
+/**
+ * Consumes order events from Kafka.
+ *
+ * Simulates the payment process and publishes the payment
+ * result asynchronously.
+ */
 @Service
 public class OrderConsumer {
 

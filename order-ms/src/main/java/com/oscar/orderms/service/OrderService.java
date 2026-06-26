@@ -13,9 +13,15 @@ import com.oscar.orderms.security.RSAService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
+/**
+ * Handles the business logic for order management.
+ *
+ * Responsible for creating orders, retrieving order information,
+ * publishing events to Kafka and updating the order status after
+ * payment processing.
+ */
 @Service
 public class OrderService {
 

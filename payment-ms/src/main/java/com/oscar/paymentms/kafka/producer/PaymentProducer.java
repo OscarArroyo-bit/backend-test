@@ -7,6 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+/**
+ * Publishes payment processing results to Apache Kafka.
+ *
+ * The Order microservice consumes these events to update
+ * the corresponding order status.
+ */
 @Service
 public class PaymentProducer {
 

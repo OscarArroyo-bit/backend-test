@@ -2,14 +2,18 @@ package com.oscar.orderms.controller;
 
 import com.oscar.orderms.dto.CreateOrderRequest;
 import com.oscar.orderms.dto.OrderResponse;
-import com.oscar.orderms.entity.Order;
 import com.oscar.orderms.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
+/**
+ * REST controller responsible for managing orders.
+ *
+ * Exposes endpoints for creating orders and retrieving
+ * order information.
+ */
 @RestController
 @RequestMapping("/orders")
 public class OrderController {

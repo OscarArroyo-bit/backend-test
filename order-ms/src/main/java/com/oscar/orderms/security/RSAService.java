@@ -1,11 +1,17 @@
 package com.oscar.orderms.security;
 
 import org.springframework.stereotype.Service;
-
 import javax.crypto.Cipher;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+/**
+ * Provides RSA encryption and decryption services.
+ *
+ * Sensitive payment information is encrypted before
+ * being published to Kafka and decrypted by the
+ * Payment Service.
+ */
 @Service
 public class RSAService {
 

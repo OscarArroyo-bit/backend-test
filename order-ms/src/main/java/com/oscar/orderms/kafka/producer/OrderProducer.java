@@ -7,6 +7,12 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Publishes order events to Apache Kafka.
+ *
+ * This producer is responsible for notifying the Payment
+ * microservice whenever a new order has been created.
+ */
 @Service
 public class OrderProducer {
 
